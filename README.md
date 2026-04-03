@@ -15,12 +15,12 @@ Requirements: Bun 1.3+.
 
 Run the guided CLI:
 ```bash
-npx @iannuttall/dotagents
+npx @dean9703111/dotagents
 ```
 
 Or with Bun:
 ```bash
-bunx @iannuttall/dotagents
+bunx @dean9703111/dotagents
 ```
 
 Choose a workspace (Global home or Project folder), select the clients you want to manage, and follow the prompts. You can run it again anytime to repair links or undo changes.

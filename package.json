@@ -1,5 +1,5 @@
 {
-  "name": "@iannuttall/dotagents",
+  "name": "@dean9703111/dotagents",
   "version": "0.1.3",
   "description": "Canonical .agents manager with symlinks for popular AI tools",
   "type": "module",
