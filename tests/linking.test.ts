@@ -32,6 +32,7 @@ test('creates symlinks from canonical .agents to tool homes', async () => {
   const codexPrompts = path.join(home, '.codex', 'prompts');
   const cursorCommands = path.join(home, '.cursor', 'commands');
   const opencodeCommands = path.join(home, '.config', 'opencode', 'commands');
+  const antigravityWorkflows = path.join(home, '.gemini', 'antigravity', 'workflows');
   const claudeAgents = path.join(home, '.claude', 'CLAUDE.md');
   const factoryAgents = path.join(home, '.factory', 'AGENTS.md');
   const codexAgents = path.join(home, '.codex', 'AGENTS.md');
@@ -40,6 +41,7 @@ test('creates symlinks from canonical .agents to tool homes', async () => {
   const opencodeSkills = path.join(home, '.config', 'opencode', 'skills');
   const geminiCommands = path.join(home, '.gemini', 'commands');
   const geminiSkills = path.join(home, '.gemini', 'skills');
+  const antigravitySkills = path.join(home, '.gemini', 'antigravity', 'skills');
   const copilotSkills = path.join(home, '.copilot', 'skills');
 
   expect(await readLinkTarget(claudeCommands)).toBe(commands);
@@ -48,6 +50,7 @@ test('creates symlinks from canonical .agents to tool homes', async () => {
   expect(await readLinkTarget(cursorCommands)).toBe(commands);
   expect(await readLinkTarget(opencodeCommands)).toBe(commands);
   expect(await readLinkTarget(geminiCommands)).toBe(commands);
+  expect(await readLinkTarget(antigravityWorkflows)).toBe(commands);
   expect(await readLinkTarget(claudeAgents)).toBe(agentsFile);
   expect(await readLinkTarget(factoryAgents)).toBe(agentsFile);
   expect(await readLinkTarget(codexAgents)).toBe(agentsFile);
@@ -55,6 +58,7 @@ test('creates symlinks from canonical .agents to tool homes', async () => {
   expect(await readLinkTarget(cursorSkills)).toBe(path.join(canonical, 'skills'));
   expect(await readLinkTarget(opencodeSkills)).toBe(path.join(canonical, 'skills'));
   expect(await readLinkTarget(geminiSkills)).toBe(path.join(canonical, 'skills'));
+  expect(await readLinkTarget(antigravitySkills)).toBe(path.join(canonical, 'skills'));
   expect(await readLinkTarget(copilotSkills)).toBe(path.join(canonical, 'skills'));
 });
 
@@ -155,6 +159,7 @@ test('project scope does not link AGENTS/CLAUDE files', async () => {
     path.join(project, '.factory', 'AGENTS.md'),
     path.join(project, '.codex', 'AGENTS.md'),
     path.join(home, '.config', 'opencode', 'AGENTS.md'),
+    path.join(project, '.agent', 'AGENTS.md'),
     path.join(project, '.agents', 'AGENTS.md'),
     path.join(project, '.agents', 'CLAUDE.md'),
   ]);
@@ -183,6 +188,25 @@ test('github skills link to .github/skills in project scope', async () => {
   const githubSkills = path.join(project, '.github', 'skills');
 
   expect(await readLinkTarget(githubSkills)).toBe(skills);
+});
+
+test('antigravity links to .agent folders in project scope', async () => {
+  const home = await makeTempDir('dotagents-home-');
+  const project = await makeTempDir('dotagents-project-');
+
+  const plan = await buildLinkPlan({ scope: 'project', homeDir: home, projectRoot: project });
+  const backup = await createBackupSession({ canonicalRoot: path.join(project, '.agents'), scope: 'project', operation: 'test' });
+  const result = await applyLinkPlan(plan, { backup });
+  await finalizeBackup(backup);
+  expect(result.applied).toBeGreaterThan(0);
+
+  const commands = path.join(project, '.agents', 'commands');
+  const skills = path.join(project, '.agents', 'skills');
+  const antigravityWorkflows = path.join(project, '.agent', 'workflows');
+  const antigravitySkills = path.join(project, '.agent', 'skills');
+
+  expect(await readLinkTarget(antigravityWorkflows)).toBe(commands);
+  expect(await readLinkTarget(antigravitySkills)).toBe(skills);
 });
 
 test('github skills link to ~/.copilot/skills in global scope', async () => {

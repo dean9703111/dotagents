@@ -30,7 +30,7 @@ Global home affects all projects. Project folder only affects the current direct
 ## What it does
 
 - Keeps `.agents` as the source of truth.
-- Creates symlinks for Claude, Codex, Factory, Cursor, OpenCode, and Gemini (based on your selection).
+- Creates symlinks for Claude, Codex, Factory, Cursor, OpenCode, Gemini, and Antigravity (based on your selection).
 - Always creates a backup before any overwrite so changes are reversible.
 
 ## Where it links (global scope)
@@ -55,6 +55,8 @@ Global home affects all projects. Project folder only affects the current direct
 
 `.agents/commands` → `~/.gemini/commands`
 
+`.agents/commands` → `~/.gemini/antigravity/workflows`
+
 `.agents/hooks` → `~/.claude/hooks`
 
 `.agents/hooks` → `~/.factory/hooks`
@@ -76,6 +78,8 @@ Global home affects all projects. Project folder only affects the current direct
 `.agents/skills` → `~/.config/opencode/skills`
 
 `.agents/skills` → `~/.gemini/skills`
+
+`.agents/skills` → `~/.gemini/antigravity/skills`
 
 Project scope links only commands/hooks/skills into the project’s client folders (no AGENTS/CLAUDE/GEMINI rules).
 
@@ -106,6 +110,7 @@ bun run build
 - Cursor supports `.claude/commands` and `.claude/skills` (global or project). dotagents also links `.agents/commands` → `.cursor/commands` and `.agents/skills` → `.cursor/skills`.
 - OpenCode uses `~/.config/opencode/AGENTS.md` and prefers AGENTS.md over CLAUDE.md when both exist.
 - Codex prompts always symlink to `.agents/commands` (canonical source).
+- Antigravity workflows symlink to `.agents/commands`, and Antigravity skills symlink to `.agents/skills`. In project scope these targets are `.agent/workflows` and `.agent/skills`.
 - Skills require a valid `SKILL.md` with `name` + `description` frontmatter.
 - Claude prompt precedence: if `.agents/CLAUDE.md` exists, it links to `.claude/CLAUDE.md`. Otherwise `.agents/AGENTS.md` is used. After adding or removing `.agents/CLAUDE.md`, re-run dotagents and apply/repair links to update the symlink. Factory/Codex always link to `.agents/AGENTS.md`.
 - Gemini context file precedence: if `.agents/GEMINI.md` exists, it links to `.gemini/GEMINI.md`. Otherwise `.agents/AGENTS.md` is used. After adding or removing `.agents/GEMINI.md`, re-run dotagents and apply/repair links to update the symlink.

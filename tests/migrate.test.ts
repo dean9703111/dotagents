@@ -103,3 +103,36 @@ test('migration wizard copies skills from github/copilot folders', async () => {
   expect(projectResult.copied).toBeGreaterThan(0);
   expect(fs.existsSync(path.join(project, '.agents', 'skills', 'project-github-skill', 'SKILL.md'))).toBe(true);
 });
+
+test('migration wizard copies antigravity workflows and skills into .agents', async () => {
+  const home = await makeTempDir('dotagents-home-');
+  const project = await makeTempDir('dotagents-project-');
+
+  await writeFile(path.join(project, '.agent', 'workflows', 'ship-it.md'), '# Ship it');
+  await createSkill(path.join(project, '.agent', 'skills'), 'antigravity-skill');
+
+  const plan = await scanMigration({ scope: 'project', homeDir: home, projectRoot: project, clients: ['antigravity'] });
+  expect(plan.auto.length + plan.conflicts.length).toBeGreaterThan(0);
+
+  const selections = new Map();
+  for (const conflict of plan.conflicts) {
+    selections.set(conflict.targetPath, conflict.candidates[0] || null);
+  }
+
+  const backup = await createBackupSession({ canonicalRoot: path.join(project, '.agents'), scope: 'project', operation: 'test' });
+  const result = await applyMigration(plan, selections, {
+    scope: 'project',
+    homeDir: home,
+    projectRoot: project,
+    backup,
+    forceLinks: true,
+    clients: ['antigravity'],
+  });
+  await finalizeBackup(backup);
+
+  expect(result.copied).toBeGreaterThan(0);
+  expect(fs.existsSync(path.join(project, '.agents', 'commands', 'ship-it.md'))).toBe(true);
+  expect(fs.existsSync(path.join(project, '.agents', 'skills', 'antigravity-skill', 'SKILL.md'))).toBe(true);
+  expect(await readLinkTarget(path.join(project, '.agent', 'workflows'))).toBe(path.join(project, '.agents', 'commands'));
+  expect(await readLinkTarget(path.join(project, '.agent', 'skills'))).toBe(path.join(project, '.agents', 'skills'));
+});

@@ -17,6 +17,7 @@ export type ResolvedRoots = {
   opencodeRoot: string;
   opencodeConfigRoot: string;
   geminiRoot: string;
+  antigravityRoot: string;
   githubRoot: string;
   copilotRoot: string;
   ampcodeConfigRoot: string;
@@ -37,6 +38,7 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
       opencodeRoot: path.join(homeDir, '.config', 'opencode'),
       opencodeConfigRoot: path.join(homeDir, '.config', 'opencode'),
       geminiRoot: path.join(homeDir, '.gemini'),
+      antigravityRoot: path.join(homeDir, '.gemini', 'antigravity'),
       githubRoot: path.join(projectRoot, '.github'),
       copilotRoot: path.join(homeDir, '.copilot'),
       ampcodeConfigRoot: path.join(homeDir, '.config', 'amp'),
@@ -53,6 +55,7 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
     opencodeRoot: path.join(projectRoot, '.opencode'),
     opencodeConfigRoot: path.join(homeDir, '.config', 'opencode'),
     geminiRoot: path.join(projectRoot, '.gemini'),
+    antigravityRoot: path.join(projectRoot, '.agent'),
     githubRoot: path.join(projectRoot, '.github'),
     copilotRoot: path.join(homeDir, '.copilot'),
     ampcodeConfigRoot: path.join(homeDir, '.config', 'amp'),

@@ -60,7 +60,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
   const roots = resolveRoots(opts);
   const canonicalRoot = roots.canonicalRoot;
   const candidatesByTarget = new Map<string, MigrationCandidate[]>();
-  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode', 'gemini', 'github', 'ampcode']);
+  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode', 'gemini', 'github', 'ampcode', 'antigravity']);
   const includeAgentFiles = opts.scope === 'global';
 
   const canonicalCommands = path.join(canonicalRoot, 'commands');
@@ -78,6 +78,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
       clients.has('cursor') ? { label: 'Cursor commands', dir: path.join(roots.cursorRoot, 'commands') } : null,
       clients.has('opencode') ? { label: 'OpenCode commands', dir: path.join(roots.opencodeRoot, 'commands') } : null,
       clients.has('gemini') ? { label: 'Gemini commands', dir: path.join(roots.geminiRoot, 'commands') } : null,
+      clients.has('antigravity') ? { label: 'Antigravity workflows', dir: path.join(roots.antigravityRoot, 'workflows') } : null,
     ].filter(Boolean) as { label: string; dir: string }[],
     hooks: [
       clients.has('claude') ? { label: 'Claude hooks', dir: path.join(roots.claudeRoot, 'hooks') } : null,
@@ -90,6 +91,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
       clients.has('cursor') ? { label: 'Cursor skills', dir: path.join(roots.cursorRoot, 'skills') } : null,
       clients.has('opencode') ? { label: 'OpenCode skills', dir: path.join(opencodeSkillsRoot, 'skills') } : null,
       clients.has('gemini') ? { label: 'Gemini skills', dir: path.join(roots.geminiRoot, 'skills') } : null,
+      clients.has('antigravity') ? { label: 'Antigravity skills', dir: path.join(roots.antigravityRoot, 'skills') } : null,
       // GitHub uses .github/skills for project scope and ~/.copilot/skills for global scope.
       clients.has('github')
         ? (opts.scope === 'global'
